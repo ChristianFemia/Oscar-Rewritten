@@ -9,7 +9,8 @@ public class Intake extends SubsystemBase {
     public static WPI_TalonSRX intake = new WPI_TalonSRX(Constants.INTAKE_MOTOR);
 
     public static void setupMotors(){
-
+        intake.enableCurrentLimit(true);
+        intake.configContinuousCurrentLimit(Constants.INTAKE_CURRENT);
     }
 
     public void intakeBalls(double rpm){

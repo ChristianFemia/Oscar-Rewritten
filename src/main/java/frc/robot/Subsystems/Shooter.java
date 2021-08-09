@@ -17,6 +17,16 @@ public class Shooter extends SubsystemBase {
 
     public static void setupMotors(){
         shooterSlave.follow(shooterMaster);
+
+        shooterMaster.enableCurrentLimit(true);
+        turret.enableCurrentLimit(true);
+        ballPump.enableCurrentLimit(true);
+        indexer.enableCurrentLimit(true);
+
+        shooterMaster.configContinuousCurrentLimit(Constants.SHOOTER_CURRENT);
+        turret.configContinuousCurrentLimit(Constants.TURRET_CURRENT);
+        ballPump.configContinuousCurrentLimit(Constants.BALL_PUMP_CURRENT);
+        indexer.configContinuousCurrentLimit(Constants.INDEXER_CURRENT);
         
     }
     public static void spinShooter(double RPM){
@@ -33,16 +43,23 @@ public class Shooter extends SubsystemBase {
 
     public static void turnTurret(double angle){
         if(turret.isRevLimitSwitchClosed() == 1 || turret.isFwdLimitSwitchClosed() == 1){
-            turret.stopMotor();
+            turret.set(0);
         } else {
             turret.set(angle);
         }
     }
-    public static void ballPump(double rpm){
+    public static void BallPump(double rpm){
         ballPump.set(rpm);
     }
+    public static void stopBallPump(){
+        ballPump.set(0);
+    }
+
     public static void Indexer(double rpm){
         indexer.set(rpm);
+    }
+    public static void stopIndexer(){
+        indexer.set(0);
     }
 
 }

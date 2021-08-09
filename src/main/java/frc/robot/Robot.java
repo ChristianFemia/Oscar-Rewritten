@@ -9,58 +9,95 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.Constants;
 import frc.robot.Subsystems.*;
+
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the TimedRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
   /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
    */
 
   XboxController operatorGamepad = new XboxController(Constants.OPERATOR_CONTROLLER);
   XboxController driverGamepad = new XboxController(Constants.DRIVER_CONTROLLER);
   private Drive robotDrive = new Drive();
   private Shooter shooter = new Shooter();
+  private Intake intake = new Intake();
+
   @Override
   public void robotInit() {
     robotDrive.setupMotors();
     shooter.setupMotors();
+    intake.setupMotors();
   }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+  }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+  }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+  }
 
   @Override
   public void teleopPeriodic() {
     robotDrive.arcadeDrive(driverGamepad.getY(Hand.kLeft), driverGamepad.getX(Hand.kRight));
-    if((Math.abs(driverGamepad.getX(Hand.kRight)) > 0.1) &&(driverGamepad.getBumper(Hand.kRight))){
+    if ((Math.abs(driverGamepad.getX(Hand.kRight)) > 0.1) && (driverGamepad.getBumper(Hand.kRight))) {
       shooter.turnTurret(driverGamepad.getX(Hand.kRight));
-    } 
+    }
 
+    if (operatorGamepad.getTriggerAxis(Hand.kRight) > 0.1) {
+      intake.intakeBalls(1);
+    } else if (operatorGamepad.getBumper(Hand.kRight)) {
+      intake.intakeBalls(-1);
+    } else {
+      intake.stopIntake();
+    }
+    if ((Math.abs(operatorGamepad.getTriggerAxis(Hand.kRight))) > 0.1) {
+      shooter.spinShooter(Constants.SHOOTER_RPM);
+      if (operatorGamepad.getYButton()) {
+        shooter.BallPump(1);
+      } else {
+        shooter.BallPump(-1);
+      }
+    } else {
+      shooter.stopShooter();
+      shooter.stopBallPump();
+    }
+
+    if (operatorGamepad.getBButton()) {
+      shooter.Indexer(Constants.INTAKE_TARGET_SPEED);
+    } else {
+      shooter.stopIndexer();
+    }
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+  }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 }
