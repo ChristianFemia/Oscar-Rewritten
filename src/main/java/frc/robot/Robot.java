@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.Constants;
-import frc.robot.Subsystems.Drive;
+import frc.robot.Subsystems.*;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -24,9 +24,11 @@ public class Robot extends TimedRobot {
   XboxController operatorGamepad = new XboxController(Constants.OPERATOR_CONTROLLER);
   XboxController driverGamepad = new XboxController(Constants.DRIVER_CONTROLLER);
   private Drive robotDrive = new Drive();
+  private Shooter shooter = new Shooter();
   @Override
   public void robotInit() {
     robotDrive.setupMotors();
+    shooter.setupMotors();
   }
 
   @Override
@@ -44,6 +46,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     robotDrive.arcadeDrive(driverGamepad.getY(Hand.kLeft), driverGamepad.getX(Hand.kRight));
+    if((Math.abs(driverGamepad.getX(Hand.kRight)) > 0.1) &&(driverGamepad.getBumper(Hand.kRight))){
+      shooter.turnTurret(driverGamepad.getX(Hand.kRight));
+    } 
+
   }
 
   @Override

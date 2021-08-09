@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+
 import frc.Constants;
 
 public class Drive extends SubsystemBase{  
@@ -24,13 +25,22 @@ public class Drive extends SubsystemBase{
         leftDriveSlaveTwo.follow(leftDriveMotor);
         rightDriveSlaveOne.follow(rightDriveMotor);
         rightDriveSlaveOne.follow(rightDriveMotor);
+
+        
         leftDriveMotor.setInverted(true);
         rightDriveMotor.setInverted(false);
+
+        leftDriveMotor.enableCurrentLimit(true);
+        rightDriveMotor.enableCurrentLimit(true);
+
+        leftDriveMotor.configContinuousCurrentLimit(3); //2.7
+        rightDriveMotor.configContinuousCurrentLimit(3); //2.7
 
     }
     public void arcadeDrive(double speed, double turn){
         drive.arcadeDrive(speed, turn);
     }
+
     public static void stopMotors(){
         leftDriveMotor.stopMotor();
         leftDriveSlaveOne.stopMotor();
