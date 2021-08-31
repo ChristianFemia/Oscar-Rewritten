@@ -34,7 +34,7 @@ public class Shooter extends SubsystemBase {
         turret.configContinuousCurrentLimit(Constants.TURRET_CURRENT);
         ballPump.configContinuousCurrentLimit(Constants.BALL_PUMP_CURRENT);
         indexer.configContinuousCurrentLimit(Constants.INDEXER_CURRENT);
-
+        indexer.setInverted(true);
 	    shooterMaster.configNominalOutputForward(0, Constants.KTIMEOUTMS);
 	    shooterMaster.configNominalOutputReverse(0, Constants.KTIMEOUTMS);
 	    shooterMaster.configPeakOutputForward(1, Constants.KTIMEOUTMS);
@@ -51,6 +51,8 @@ public class Shooter extends SubsystemBase {
         shooterSlave.config_kI(Constants.KSLOTIDX, Constants.SHOOTER_PID_I);
         shooterSlave.config_kD(Constants.KSLOTIDX, Constants.SHOOTER_PID_D);
 
+        shooterMaster.setInverted(true);
+        shooterSlave.setInverted(false);
         turret.config_kF(Constants.KSLOTIDX, Constants.TURRET_PID_F);
         turret.config_kP(Constants.KSLOTIDX, Constants.TURRET_PID_P);
         turret.config_kI(Constants.KSLOTIDX, Constants.TURRET_PID_I);
@@ -70,15 +72,19 @@ public class Shooter extends SubsystemBase {
         
         turret.configMotionCruiseVelocity(2000, Constants.KTIMEOUTMS);
         turret.configMotionAcceleration(2000, Constants.KTIMEOUTMS);
-
+        turret.setInverted(true);
 
     }
-    public static void spinShooter(double RPM){
-        if(RPM == 0){
+    public static void spinShooter(double value){
+
+        if(value == 0){
             stopShooter();
         } else {
-            double targetVelocity_UnitsPer100ms = Constants.SHOOTER_SCALING_FACTOR*(Constants.NUMBER_OF_BUCKETS*Constants.ONE_HUNDRED_MS_TO_MINUTES)/(RPM*Constants.TICKS_PER_REVOLUTION);
-            shooterMaster.set(ControlMode.Velocity, targetVelocity_UnitsPer100ms);
+
+            //double targetVelocity_UnitsPer100ms = Constants.SHOOTER_SCALING_FACTOR*(Constants.NUMBER_OF_BUCKETS*Constants.ONE_HUNDRED_MS_TO_MINUTES)/(RPM*Constants.TICKS_PER_REVOLUTION);
+            //shooterMaster.config_kF(Constants.KSLOTIDX, targetVelocity_UnitsPer100ms);
+          
+            shooterMaster.set(ControlMode.PercentOutput, value);
         }
     }
 
@@ -89,7 +95,7 @@ public class Shooter extends SubsystemBase {
     public static void turnTurret(double velocity) {
         turret.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, Constants.KTIMEOUTMS);
         turret.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, Constants.KTIMEOUTMS);
-        turret.set(ControlMode.MotionMagic, 0.5 * velocity);  
+        turret.set(ControlMode.PercentOutput, 0.5* velocity);  
     }
 
     public static void BallPump(double rpm){

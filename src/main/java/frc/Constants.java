@@ -19,12 +19,12 @@ public final class Constants {
 
     public static final int INDEXER_MOTOR = 9;
 
-    public static final int DRIVE_TRAIN_CURRENT = 45; //Amps
-    public static final int INTAKE_CURRENT = 3;
-    public static final int BALL_PUMP_CURRENT = 3;
-    public static final int INDEXER_CURRENT = 2;
+    public static final int DRIVE_TRAIN_CURRENT = 30; //Amps
+    public static final int INTAKE_CURRENT = 10;
+    public static final int BALL_PUMP_CURRENT = 10;
+    public static final int INDEXER_CURRENT = 10;
     public static final int SHOOTER_CURRENT = 20;
-    public static final int TURRET_CURRENT = 2;
+    public static final int TURRET_CURRENT = 5;
     
 
     public static final int INTAKE_TARGET_SPEED = 1200;
