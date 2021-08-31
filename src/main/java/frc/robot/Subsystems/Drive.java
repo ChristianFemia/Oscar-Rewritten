@@ -24,17 +24,30 @@ public class Drive extends SubsystemBase{
         leftDriveSlaveOne.follow(leftDriveMotor);
         leftDriveSlaveTwo.follow(leftDriveMotor);
         rightDriveSlaveOne.follow(rightDriveMotor);
-        rightDriveSlaveOne.follow(rightDriveMotor);
+        rightDriveSlaveTwo.follow(rightDriveMotor);
 
         
-        leftDriveMotor.setInverted(true);
+        leftDriveMotor.setInverted(false);
+        leftDriveSlaveOne.setInverted(false);
+        leftDriveSlaveTwo.setInverted(false);
         rightDriveMotor.setInverted(false);
+        rightDriveSlaveOne.setInverted(false);
+        rightDriveSlaveTwo.setInverted(false);
+
 
         leftDriveMotor.enableCurrentLimit(true);
+        leftDriveSlaveOne.enableCurrentLimit(true);
+        leftDriveSlaveTwo.enableCurrentLimit(true);
         rightDriveMotor.enableCurrentLimit(true);
+        rightDriveSlaveOne.enableCurrentLimit(true);
+        rightDriveSlaveTwo.enableCurrentLimit(true);
 
-        leftDriveMotor.configContinuousCurrentLimit(3); //2.7
-        rightDriveMotor.configContinuousCurrentLimit(3); //2.7
+        leftDriveMotor.configContinuousCurrentLimit(Constants.DRIVE_TRAIN_CURRENT); 
+        leftDriveSlaveOne.configContinuousCurrentLimit(Constants.DRIVE_TRAIN_CURRENT);
+        leftDriveSlaveTwo.configContinuousCurrentLimit(Constants.DRIVE_TRAIN_CURRENT);
+        rightDriveMotor.configContinuousCurrentLimit(Constants.DRIVE_TRAIN_CURRENT); 
+        rightDriveSlaveOne.configContinuousCurrentLimit(Constants.DRIVE_TRAIN_CURRENT);
+        rightDriveSlaveTwo.configContinuousCurrentLimit(Constants.DRIVE_TRAIN_CURRENT);
 
     }
     public void arcadeDrive(double speed, double turn){

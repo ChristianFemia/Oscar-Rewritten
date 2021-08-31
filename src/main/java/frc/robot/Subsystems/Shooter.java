@@ -1,6 +1,11 @@
 package frc.robot.Subsystems;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 import frc.Constants;
@@ -19,21 +24,61 @@ public class Shooter extends SubsystemBase {
         shooterSlave.follow(shooterMaster);
 
         shooterMaster.enableCurrentLimit(true);
+        shooterSlave.enableCurrentLimit(true);
         turret.enableCurrentLimit(true);
         ballPump.enableCurrentLimit(true);
         indexer.enableCurrentLimit(true);
 
         shooterMaster.configContinuousCurrentLimit(Constants.SHOOTER_CURRENT);
+        shooterSlave.configContinuousCurrentLimit(Constants.SHOOTER_CURRENT);
         turret.configContinuousCurrentLimit(Constants.TURRET_CURRENT);
         ballPump.configContinuousCurrentLimit(Constants.BALL_PUMP_CURRENT);
         indexer.configContinuousCurrentLimit(Constants.INDEXER_CURRENT);
+
+	    shooterMaster.configNominalOutputForward(0, Constants.KTIMEOUTMS);
+	    shooterMaster.configNominalOutputReverse(0, Constants.KTIMEOUTMS);
+	    shooterMaster.configPeakOutputForward(1, Constants.KTIMEOUTMS);
+	    shooterMaster.configPeakOutputReverse(-1, Constants.KTIMEOUTMS);
+
+
+        shooterMaster.config_kF(Constants.KSLOTIDX, Constants.SHOOTER_PID_F);
+        shooterMaster.config_kP(Constants.KSLOTIDX, Constants.SHOOTER_PID_P);
+        shooterMaster.config_kI(Constants.KSLOTIDX, Constants.SHOOTER_PID_I);
+        shooterMaster.config_kD(Constants.KSLOTIDX, Constants.SHOOTER_PID_D);
+
+        shooterSlave.config_kF(Constants.KSLOTIDX, Constants.SHOOTER_PID_F);
+        shooterSlave.config_kP(Constants.KSLOTIDX, Constants.SHOOTER_PID_P);
+        shooterSlave.config_kI(Constants.KSLOTIDX, Constants.SHOOTER_PID_I);
+        shooterSlave.config_kD(Constants.KSLOTIDX, Constants.SHOOTER_PID_D);
+
+        turret.config_kF(Constants.KSLOTIDX, Constants.TURRET_PID_F);
+        turret.config_kP(Constants.KSLOTIDX, Constants.TURRET_PID_P);
+        turret.config_kI(Constants.KSLOTIDX, Constants.TURRET_PID_I);
+        turret.config_kD(Constants.KSLOTIDX, Constants.TURRET_PID_D);
+
+
+        turret.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.KTIMEOUTMS);
+		turret.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.KTIMEOUTMS);
+
+		/* Set the peak and nominal outputs */
+		turret.configNominalOutputForward(0, Constants.KTIMEOUTMS);
+		turret.configNominalOutputReverse(0, Constants.KTIMEOUTMS);
+		turret.configPeakOutputForward(1, Constants.KTIMEOUTMS);
+		turret.configPeakOutputReverse(-1, Constants.KTIMEOUTMS);
+
+		/* Set Motion Magic gains in slot0 - see documentation */
         
+        turret.configMotionCruiseVelocity(2000, Constants.KTIMEOUTMS);
+        turret.configMotionAcceleration(2000, Constants.KTIMEOUTMS);
+
+
     }
     public static void spinShooter(double RPM){
         if(RPM == 0){
             stopShooter();
         } else {
-            shooterMaster.set(RPM);
+            double targetVelocity_UnitsPer100ms = Constants.SHOOTER_SCALING_FACTOR*(Constants.NUMBER_OF_BUCKETS*Constants.ONE_HUNDRED_MS_TO_MINUTES)/(RPM*Constants.TICKS_PER_REVOLUTION);
+            shooterMaster.set(ControlMode.Velocity, targetVelocity_UnitsPer100ms);
         }
     }
 
@@ -41,13 +86,12 @@ public class Shooter extends SubsystemBase {
         shooterMaster.set(0);
     }
 
-    public static void turnTurret(double angle){
-        if(turret.isRevLimitSwitchClosed() == 1 || turret.isFwdLimitSwitchClosed() == 1){
-            turret.set(0);
-        } else {
-            turret.set(angle);
-        }
+    public static void turnTurret(double velocity) {
+        turret.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, Constants.KTIMEOUTMS);
+        turret.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, Constants.KTIMEOUTMS);
+        turret.set(ControlMode.MotionMagic, 0.5 * velocity);  
     }
+
     public static void BallPump(double rpm){
         ballPump.set(rpm);
     }

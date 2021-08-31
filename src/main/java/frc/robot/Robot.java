@@ -54,9 +54,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    robotDrive.arcadeDrive(driverGamepad.getY(Hand.kLeft), driverGamepad.getX(Hand.kRight));
+    robotDrive.arcadeDrive(driverGamepad.getY(Hand.kLeft), driverGamepad.getX(Hand.kLeft));
     if ((Math.abs(driverGamepad.getX(Hand.kRight)) > 0.1) && (driverGamepad.getBumper(Hand.kRight))) {
-      shooter.turnTurret(driverGamepad.getX(Hand.kRight));
+      shooter.turnTurret(driverGamepad.getY(Hand.kRight));
     }
 
     if (operatorGamepad.getTriggerAxis(Hand.kRight) > 0.1) {
@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
     } else {
       intake.stopIntake();
     }
-    if ((Math.abs(operatorGamepad.getTriggerAxis(Hand.kRight))) > 0.1) {
+    if ((Math.abs(operatorGamepad.getTriggerAxis(Hand.kLeft))) > 0.1) {
       shooter.spinShooter(Constants.SHOOTER_RPM);
       if (operatorGamepad.getYButton()) {
         shooter.BallPump(1);
